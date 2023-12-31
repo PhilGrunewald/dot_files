@@ -1,0 +1,61 @@
+*vim-mkd.txt* markdown tools for beauty and efficiency
+
+====================================================================
+CONTENTS                                          *vim-mkd-contents*
+
+    1. Features ............. |vim-mkd-features|
+    2. How it works ......... |vim-mkd-workings|
+    3. Revision history .... |vim-mkd-revisions|
+
+====================================================================
+1. Features                                      *vim-mkd-features*
+
+*Bib-completion* Type `@` for bibliography popup
+
+*Auto-underline* Start a line with `--` or `==` to underline the line above
+
+*Auto-increment* `++` and `--` cycle through numbers OR `-` to `o`, `✓` (checkbox style)
+
+Processing
+----------
+*Pandoc* *<leader>p* *<S-Enter>* generate `pdf`
+*PandocDoc* for `docx` file
+*PandocEPSRC* for docx with Arial, 12pt standard proposal format
+*PandocTex* for `tex` file
+*PandocHtml* for `html` file
+*PandocCV* for `pdf` CV file with bibliography
+
+*Edol* build the Edol website
+
+*mdFilter.py* Preprocess before pandoc conversion. 
+
+- Comments: Ignore lines starting with `%` (type `//` as for all my filetypes)
+- Fig numbers: `#filename` gets replaces with sequential numbers
+- Colour: `^.` green, `^_` red
+
+
+====================================================================
+2. How it works                                     *vim-mkd-workings*
+
+Quite a few bits under the bonnet.
+
+`Bibliography` uses `bib.py` md2bib function to generate `bib` file
+`Pandoc prep` uses `mdFilter.py`
+`Pandoc processing` uses `!pandoc` for various outputs
+
+====================================================================
+3. Revision history                                *vim-mkd-revisions*
+
+| Date      | Ver.  | Author         | Updates               |
+| ----      | ----- | ------         | --------              |
+| 24 Apr 23 | v1.0  | Phil Grunewald | Plugin version        |
+
+
+
+
+
+
+
+
+===================================================================
+ vim:tw=78:ts=8:sw=2:et:ft=help:norl:

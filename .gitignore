@@ -1,0 +1,9 @@
+**/*.pyc
+.*
+python/p10
+python/py
+python/ai
+nvim/plugged
+nvim/unplugged
+
+python/renew/.menu.py

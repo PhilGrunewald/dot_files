@@ -1,0 +1,70 @@
+# revision 05 Dec 23
+# Power10k and syntax hightlighting
+# removed Oh My Zsh - too much bloat
+
+# Terminal
+
+export TERM=xterm-256color
+export CLICOLOR=1
+export LANG=en_GB.UTF-8
+export LANGUAGE=en_GB.UTF-8
+set -o vi            # Vim editing
+export EDITOR=nvim
+
+# Path
+
+# for my own stuff (to avoid parking stuff in /usr/local/bin)
+export PATH="$HOME/.config/zsh:$PATH"
+export PATH="$HOME/.config/python:$PATH"
+export PATH="$HOME/.config/python/notiondown:$PATH"
+export PATH="$HOME/.config/templates:$PATH" # for pandoc
+# for languagetool
+export PATH="/usr/local/opt/openjdk/bin:$PATH"
+
+export EDOL="/Users/pg/Library/CloudStorage/OneDrive-SharedLibraries-UniversityCollegeLondon/Bartlett.EDOL - Documents"
+export PATH="$EDOL:$PATH"
+
+# Python
+source ~/.config/python/p10/bin/activate
+export PYTHONPATH="$HOME/.config/python:$PYTHONPATH"
+
+function findtext() { echo "greping subfolders for $1"; grep -rilI "$1" . &> .found; nvim .found; }
+function findfile() { echo "searching for $1 in file names"; find . -iname "*$1*" > .found; nvim .found; }
+
+# GNUPG
+export GNUPGHOME=~/.config/gnupg
+GPG_TTY=`tty`
+export GPG_TTY
+
+# Spotipy
+export SPOTIPY_CLIENT_ID=`gpg -d ~/.config/zsh/private/SPOTIPY_CLIENT_ID.gpg`
+export SPOTIPY_CLIENT_SECRET=`gpg -d ~/.config/zsh/private/SPOTIPY_CLIENT_SECRET.gpg`
+export SPOTIPY_REDIRECT_URI='http://localhost/~pg/spotipy.php'
+
+# suppress "You have new mail"
+MAILCHECK=0
+
+# Vim
+export NVIM="$HOME/.config/nvim"
+export MAIL="$HOME/Mail"
+
+# VisiData
+export XDG_CONFIG_HOME="$HOME/.config"
+
+# Ruby
+source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
+source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
+chruby ruby-3.1.2
+
+export ZSH="$HOME/.config/zsh"
+source $ZSH/powerlevel10k/powerlevel10k.zsh-theme
+source $ZSH/p10k.zsh
+source $ZSH/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Aliases
+source $HOME/.config/zsh/aliases
+
+clear
+
+# vim:ft=sh
+

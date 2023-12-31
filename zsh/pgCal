@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# this file is called when pressing 'm' in the attachment view (with a text/calendar file highlighted)
+# the setting is in ~/.config/neomutt/mailcap with the following line:
+# text/calendar; /usr/local/bin/caladd2 %s
+# where '%s' is the file passes to here as '$1'
+gcalcli import "$1" --calendar "Work"

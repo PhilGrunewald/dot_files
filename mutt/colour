@@ -1,0 +1,48 @@
+##### Color Options
+# Pictures/Xterm_256color_chart.png 
+color indicator black white #color001
+color status	white color022
+
+# index
+# deleted messages
+color index white color022 "~N"
+color index red default "~F"
+color index white red "~N~F"
+color index color022 default "~f philipp.grunewald@ouce.ox.ac.uk"
+color index color022 default "~f philipp.grunewald@eng.ox.ac.uk"
+color index black black "~D"
+color index black black "~D~N"
+color index black black "~D~f philipp.grunewald@ouce.ox.ac.uk"
+color index black black "~D~f philipp.grunewald@eng.ox.ac.uk"
+#
+### Address lines
+color header	color022 black ^Date:
+color header	color022 white ^From:
+color header	white black ^To:
+color header	color022 black ^Cc:
+color header	color022 white ^Subject:
+color header	color240 black ^Received:
+
+# Body
+### identifies website
+color body	color022 default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
+color body	color022 black ^Date:
+color body	color022 black ^From:
+color body	color022 white ^To:
+color body	color022 black ^Cc:
+color body	color022 white ^Subject:.*
+color body	color240 black ^Received:
+color body	color022 white ^.--.*
+
+color attachment color022 default
+
+### Sidebar
+color sidebar_highlight black color8    # highlighted, but not open, mailbox.
+color sidebar_divider color8 black      # divider separating the Sidebar from NeoMutt panels
+color sidebar_flagged red black         # flagged mail
+color sidebar_new green black           # new mail
+# color sidebar_ordinary color245 default # no new/flagged mail, etc.
+
+# URLs
+color body brightblue default "([a-z][a-z0-9+-]*://(((([a-z0-9_.!~*'();:&=+$,-]|%[0-9a-f][0-9a-f])*@)?((([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(:[0-9]+)?)|([a-z0-9_.!~*'()$,;:@&=+-]|%[0-9a-f][0-9a-f])+)(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*(/([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*(;([a-z0-9_.!~*'():@&=+$,-]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?(#([a-z0-9_.!~*'();/?:@&=+$,-]|%[0-9a-f][0-9a-f])*)?|(www|ftp)\\.(([a-z0-9]([a-z0-9-]*[a-z0-9])?)\\.)*([a-z]([a-z0-9-]*[a-z0-9])?)\\.?(:[0-9]+)?(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*(/([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*(;([-a-z0-9_.!~*'():@&=+$,]|%[0-9a-f][0-9a-f])*)*)*)?(\\?([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?(#([-a-z0-9_.!~*'();/?:@&=+$,]|%[0-9a-f][0-9a-f])*)?)[^].,:;!)? \t\r\n<>\"]"
+

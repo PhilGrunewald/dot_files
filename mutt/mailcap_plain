@@ -1,0 +1,32 @@
+# 03 Jan 23
+# same as mailcap, but uses pandoc to plain (instead of markdown)
+
+text/calendar; pgCal %s
+text/calendar; ical.py %s; copiousoutput
+
+# to open with Safari > 'v' > 'm' (attach menu 'm')
+text/html; ~/.config/mutt/open_html %s
+text/html; pandoc --quiet -f html -t plain %s; copiousoutput;
+
+# Images
+image/*; (clear && imgcat -r %s && read -n 1); needsterminal
+
+# PDF
+Application/PDF; ~/.config/mutt/open_attachment %s
+image/pdf; ~/.config/mutt/open_attachment %s
+
+# MS office
+Application/msword; ~/.config/mutt/open_attachment %s
+Application/doc; ~/.config/mutt/open_attachment %s
+Application/docx; ~/.config/mutt/open_attachment %s
+
+Application/vnd.openxmlformats-officedocument.wordprocessingml.document; ~/.config/mutt/open_attachment %s
+Application/vnd.ms-powerpoint; ~/.config/mutt/open_attachment %s
+
+# Excel
+Application/vnd.ms-excel; ~/.config/mutt/open_attachment %s
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; ~/.config/mutt/open_attachment %s
+
+Application/vnd.openxmlformats-officedocument.presentationml.presentation; ~/.config/mutt/open_attachment %s
+
+application/vnd.openxmlformats-officedocument.presentationml.presentation; ~/.config/mutt/open_attachment %s

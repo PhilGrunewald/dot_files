@@ -1,0 +1,29 @@
+#!/bin/zsh
+#
+# Author: Phil Grunewald (based on Eric Gebhart open_attachment)
+#
+# Purpose:  called by mutt as indicated by .mailcap
+#            
+# Function: Save file as Attachment
+#           'open' or 'open -a' with the right app
+
+filename=`basename $1`
+type=$2
+open_with=$3
+
+# without extension
+file=`echo $filename | cut -d"." -f1`
+
+# if the type is empty then try to figure it out.
+if [ -z $type ]; then
+    type=`file -bi $1 | cut -d"/" -f2`
+fi
+
+newfile="Attachments/"$filename
+cp $1 $newfile
+chmod +w $newfile
+if [ -z $open_with ]; then
+    open $newfile
+else
+    open -a "$open_with" $newfile
+fi

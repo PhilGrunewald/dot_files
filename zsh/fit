@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+cd ~/Sites/energy-use.org/public_html/gc
+python Phil/json2html.py
+open -a chrome http://localhost/energy-use.org/public_html/gc/Phil

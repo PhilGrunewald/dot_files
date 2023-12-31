@@ -1,0 +1,8 @@
+save-hook '~s ".Meter."' ~/Mail/Filed/Meter/
+save-hook '~f "@twitter"' ~/Mail/Filed/Twitter
+
+save-hook '~f Llewellyn-Smith' ~/Mail/Filed/Work/OE/
+save-hook '~f @energy.ox.ac.uk' ~/Mail/Filed/Work/OE/
+save-hook '~t @energy.ox.ac.uk' ~/Mail/Filed/Work/OE/
+
+save-hook '~f alison.grunewald@googlemail.com' ~/Mail/Filed/Personal

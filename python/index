@@ -1,0 +1,325 @@
+#!/usr/bin/env python3
+""" loop through image files, creates thumbnails and index.html file """
+
+import sys
+from PIL import Image
+# from os import listdir
+from os import path, walk, system, listdir
+from yattag import Doc,indent
+import shutil
+
+def getImages(root):
+    # cycle thruogh all images
+    # create thumbnail if doesn't exist
+    # list folders if they have an index.html file and append the first thumbnail
+    extensions = ('.jpg','.jpeg','.JPG','.png')
+    images = []
+    for filename in listdir(root):
+        if (filename[0] != '.') and filename.endswith(extensions):
+            imgFile = (f'{root}/{filename}')
+            thumbFile = (f'{root}/.{filename}')
+            if not path.isfile(thumbFile):
+                try:
+                    image = Image.open(imgFile)
+                    w,h = image.size
+                    c = min(image.size)
+                    image = image.crop(((w-c)//2,(h-c)//2,(w+c)//2,(h+c)//2))
+                    image.thumbnail((400, 400))
+                    image.save(thumbFile)
+                except:
+                    print(f"Failed on {filename}")
+            images.append(filename)
+        if path.isdir(f'{root}/{filename}'):
+            # filename is the subfolder name
+            if path.isfile(f'{root}/{filename}/index.html'):
+                subfiles = listdir(f'{root}/{filename}')
+                subfiles.sort()
+                # for subfile in listdir(f'{root}/{filename}'):
+                for subfile in subfiles:
+                    if (subfile[0] != '.') and subfile.endswith(extensions):
+                        images.append(f'{filename}/{subfile}')
+                        break
+        # clean up thumbnails with no image
+        if (filename[0] == '.') and filename.endswith(extensions):
+            if not path.isfile(f'{root}/{filename[1:]}'):
+                shutil.move(f'{root}/{filename}','/Users/phil/.Trash/'+filename)
+
+    # optional sort by time rather than name
+    # t = [path.getmtime(f'{root}/{img}') for img in images]
+    # images = [image for _,image in sorted(zip(t,images),reverse=True)]
+    images.sort()
+    return images
+
+
+def createHTML(root,images):
+    doc, tag, text = Doc().tagtext()
+    with tag('html', ('lang','en')):
+        with tag('head'):
+            doc.stag('meta', ('charset', 'utf-8'))
+            doc.stag('link', 
+                    ('rel','stylesheet'),
+                    ('href', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'),
+                    ('integrity', "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"),
+                    ('crossorigin',"anonymous")
+    
+                    )
+            with tag('title'):
+                text(root.split('/')[-1])
+        with tag('body', klass='black'):
+            with tag('style'):
+                text(""".centered {
+                          position: absolute;
+                          top: 80%;
+                          left: 50%;
+                          transform: translate(-50%, -50%);
+                          color: white;
+                          padding: 5px;
+                          border-radius: 5px;
+                          background-color: rgba(128, 128, 128, 0.3);
+                          }
+                        .img-link:hover {
+                           opacity: 30%;
+                         }
+                        .show-label {
+                           opacity: 0%;
+                         }
+                        .show-label:hover {
+                           opacity: 100%;
+                         }
+                         .black {
+                           background-color: black;
+                         }
+                         .exit {
+                          position: absolute;
+                          text-align: center;
+                          top: 10px;
+                          left: 20px;
+                          width: 40px;
+                          height: 40px;
+                          color: gray;
+                          font-size: 30px;
+                          margin: 10px;
+                          border-radius: 20px;
+                          background-color: rgba(128, 128, 128, 0.3);
+                         }
+                    """)
+            with tag('div', klass='row'):
+                with tag('div', klass='col-xs-6 col-sm-4 col-md-3 col-lg-2 p-0', onclick="window.location.href='../index.html'"):
+                    with tag('div', klass='exit'):
+                        text('^')
+                for img in images:
+                    if '/' in img:
+                        base = img.split('/')[0]
+                        src  = base+'/.'+img.split('/')[1]
+                        href = base +'/index.html'
+                        klass = 'img-fluid img-link'
+                        label = base
+                        labelklass = 'centered'
+                    else:
+                        href = '.'+img+'.html'
+                        src  = '.'+img
+                        klass = 'img-fluid'
+                        label = img
+                        labelklass = 'centered show-label'
+                    with tag('div', klass='col-xs-6 col-sm-4 col-md-3 col-lg-2 p-0'):
+                        with tag('a', href=href):
+                            doc.stag('img', ('src',src), klass=klass)
+                            with tag('div', klass=labelklass):
+                                text(label)
+    
+    result = indent(doc.getvalue())
+    with open(f'{root}/index.html', "w") as f:
+        f.write(result)
+
+
+def createCarousel(root,images,this):
+    doc, tag, text = Doc().tagtext()
+    with tag('html', ('lang','en')):
+        with tag('head'):
+            doc.stag('meta', ('charset', 'utf-8'))
+            doc.stag('link', 
+                    ('rel','stylesheet'),
+                    ('href', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'),
+                    ('integrity', "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"),
+                    ('crossorigin',"anonymous")
+                    )
+
+            with tag('script', 
+                    ('src','https://code.jquery.com/jquery-3.4.1.slim.min.js'),
+                    ('integrity','sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n'),
+                    ('crossorigin','anonymous')):
+                text()
+
+            with tag('script', 
+                    ('src','https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'),
+                    ('integrity','sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo'),
+                    ('crossorigin','anonymous')):
+                text()
+
+            with tag('script', 
+                    ('src','https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'),
+                    ('integrity','sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6'),
+                    ('crossorigin','anonymous')):
+                text()
+
+
+            with tag('title'):
+                text(root.split('/')[-1])
+        with tag('body', klass='black'):
+            with tag('style'):
+                text(""".centered {
+                          position: absolute;
+                          top: 80%;
+                          left: 50%;
+                          transform: translate(-50%, -50%);
+                          color: white;
+                          padding: 5px;
+                          border-radius: 5px;
+                          background-color: rgba(128, 128, 128, 0.3);
+                          }
+                        .img-link:hover {
+                           opacity: 30%;
+                         }
+                        .show-label {
+                           opacity: 0%;
+                         }
+                        .show-label:hover {
+                           opacity: 100%;
+                         }
+                         .black {
+                           background-color: black;
+                         }
+                         .exit {
+                          position: absolute;
+                          text-align: center;
+                          top: 0%;
+                          left: 0%;
+                          width: 40px;
+                          height: 40px;
+                          color: gray;
+                          font-size: 30px;
+                          margin: 10px;
+                          border-radius: 20px;
+                          background-color: rgba(128, 128, 128, 0.3);
+                         }
+                         .info {
+                          position: absolute;
+                          text-align: center;
+                          top: 50%;
+                          left: 0%;
+                          width: 40px;
+                          height: 40px;
+                          color: gray;
+                          font-size: 30px;
+                          margin: 10px;
+                          border-radius: 20px;
+                          background-color: rgba(128, 128, 128, 0.3);
+                         }
+                         .infobox {
+                          position: absolute;
+                          top: 20%;
+                          left: 20%;
+                          color: white;
+                          margin: 10px;
+                          border-radius: 20px;
+                          background-color: rgba(64, 64, 64, 0.8);
+                         }
+                         .download {
+                          position: absolute;
+                          text-align: center;
+                          padding-top: 10px;
+                          bottom: 0%;
+                          left: 0px;
+                          width: 40px;
+                          height: 40px;
+                          color: gray;
+                          font-size: 12px;
+                          margin: 10px;
+                          border-radius: 20px;
+                          background-color: rgba(128, 128, 128, 0.3);
+                         }
+                    """)
+        with tag('div', klass='exit', onclick="window.location.href='index.html'"):
+            text('^')
+        with tag('a', klass='download', href=this, download=this):
+            text('Save')
+        with tag('div', klass='container'):
+            with tag('div', 
+                    ('id','carouselExampleIndicators'), 
+                    ('data-ride','carousel'),
+                    klass='carousel slide'):
+                with tag('ol', klass='carousel-indicators'):
+                    for i,img in enumerate(images):
+                        active = ''
+                        if this == img:
+                            active = 'active'
+                        doc.stag('li', ('data-target','#carouselExampleIndicators'),('data-slide-to',i), klass=active)
+                with tag('div',klass='carousel-inner'):
+                    for i,img in enumerate(images):
+                        active = ''
+                        if this == img:
+                            active = ' active'
+                        with tag('div', klass='carousel-item'+active):
+                            doc.stag('img', ('src', img), klass='d-block h-100')
+
+                with tag('a',  
+                        ('href','#carouselExampleIndicators'), 
+                        ('role','button'),
+                        ('data-slide','prev'), 
+                        klass='carousel-control-prev'):
+                    doc.stag('span',
+                            ('aria-hidden','true'),
+                            klass='carousel-control-prev-icon')
+                    with tag('span', klass='sr-only'):
+                        text('Previous')
+
+                with tag('a', 
+                        ('href','#carouselExampleIndicators'), 
+                        ('role','button'),
+                        ('data-slide','next'), 
+                        klass='carousel-control-next'):
+                    doc.stag('span', ('aria-hidden','true'), klass='carousel-control-next-icon')
+                    with tag('span', klass='sr-only'):
+                        text('Next')
+        for i,img in enumerate(images):
+            if path.isfile(f'{img}.md'):
+                system(f'pandoc {img}.md -o {img}.html')
+                with tag('div', klass='infobox', id=f'{img}info', onclick="document.getElementById(f'{img}info').style.display='none'"):
+                    with open(f'{img}.html','r') as f:
+                        doc.asis(f.read())
+                with tag('div', klass='info', onclick="document.getElementById(f'{img}info').style.display=''"):
+                    text('i')
+
+
+    result = indent(doc.getvalue())
+    with open(f'{root}/.{image}.html', "w") as f:
+        f.write(result)
+
+
+if len(sys.argv) > 1:
+    root = sys.argv[1]
+    rootend = root.split('/')[-1]
+    if '.' in rootend and len(rootend) > 4:
+        # has filename
+        root = root.split(rootend)[0][:-1]
+else:
+    root = '.'
+
+
+dirs = [x[0] for x in walk(root)]
+# avoid the Photos library folder
+dirs = list(filter(lambda d: not 'master' in d, dirs))
+
+counts = [d.count('/') for d in dirs]
+dirs = [x for _,x in sorted(zip(counts,dirs), reverse=True)]
+
+for d in dirs:
+    images = getImages(d)
+    folder = d.split('/')[-1]
+    pics   = len(images)
+    print(f'Folder: {folder} ({pics})')
+    createHTML(d,images)
+    for image in images:
+        if not '/' in image:
+            createCarousel(d,images,image)
+

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+mu find --clearlinks --format=links --linksdir=/Users/pg/Mail/results $@

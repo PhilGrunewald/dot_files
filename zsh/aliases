@@ -1,0 +1,154 @@
+# temp
+alias diary='vim ~/Documents/Home/22_08_RD/notes.log'
+my_trash () {
+  mv "$@" ~/.Trash
+}
+
+# oh-my-zsh
+  alias ls='colorls'
+
+# terminal
+  alias type='termtyper'
+  alias timer='{echo "set for 1 hour" && sleep 3600 && terminal-notifier -message "X" -sender iTerm -title "Stand up, Phil"} &'
+  alias timer1='{echo "set for 1 hour" && sleep 1 && terminal-notifier -message "X" -sender iTerm -title "Stand up, Phil"} &'
+  alias er='espanso restart'
+  alias q='exit'
+  alias df='df -bg'          # give space in GB
+  alias top='top -s 2 -o cpu'
+  # alias rm=my_trash
+  alias screensave='cmatrix -s'
+  alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
+  alias newmail='mu find date:`date +%Y%m%d` flag:new to:philipp.grunewald@eng.ox.ac.uk'
+
+# vim
+  alias alia='vim ~/.config/zsh/aliases'
+  alias emails='vim $MAIL/addresses/aliases.tab'
+  alias config='cd ~/.config'
+  alias v=`which nvim`
+  alias vim=`which nvim`
+  alias oldmutt=/usr/bin/mutt
+  # alias pw='cd ~/Documents/txt/; gpg -d pw.gpg > pw; vim pw'
+  alias pw='vim ~/Documents/txt/pw.gpg'
+  alias log='vim ~/Documents/txt/notes.log'
+  alias todo='vim ~/Documents/txt/todo/todo.md'
+  alias bib='vim ~/Documents/txt/master.bib'
+
+# git
+  alias lg='lazygit'
+  alias gs='git status'
+  alias ga='git add -u'
+  alias gc='git commit -m'
+  alias gp="git au && git cm 'quickfix' && git push"
+  alias gpush="git push"
+  alias gl="git log -3 --abbrev-commit"
+
+# python
+  # alias renew='menu' # bit cheeky: renew is a package in .config/Python - this distracts to the executable 'menu'
+  alias renew='~/.config/Python/renew/menu.py' # bit cheeky: renew is a package in .config/Python - this distracts to the executable 'menu'
+  alias ai='source ~/.config/python/ai/bin/activate'
+  alias py='source ~/.config/python/py/bin/activate'
+  alias pyten='source ~/.config/python/p10/bin/activate'
+  alias ipy='ipython'
+  alias jn='jupyter notebook'
+  alias pip='pip3'
+  alias python='python3'
+
+# spotify
+  alias music='spotify; cd ~/Music/spotiphil/; vim albums.spot'
+  alias sp.next="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.next()'"
+  alias sp.toggle="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.toggle()'"
+  alias sp+="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.volume(\"+\")'"
+  alias sp-="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.volume(\"-\")'"
+  alias sp.playlists="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.playlists()'"
+
+# apps
+  alias go='open -a '
+  alias quick='go "Quicktime Player"'
+  alias via='go via'
+  alias diskx='go "Disk Inventory X"'
+  alias disku='go Disk\ Utility.app'
+  alias temp='go ElitechLog'
+  alias remarkable='go reMarkable'
+  alias ink='go inkscape'
+  alias arc='go arc'
+  alias notion='go notion'
+  alias whatsapp='go WhatsApp'
+  alias cal='go calendar'
+  alias slack='go slack'
+  alias seql='go Sequel\ Ace'
+  alias mysqlwb='go MySQLworkbench'
+  alias workbench='go MySQLworkbench'
+  alias mysqlw='go "MySQLWorkbench.app"'
+  alias vpn='go "Cisco AnyCOnnect Secure Mobility Client"'
+  alias con='go "Contacts.app"'
+  alias chrome='go "Chrome.app"'
+  alias www='go chrome'
+  alias fire='go "Firefox.app"'
+  alias train='go "GoldenCheetah.app"'
+  alias golden='go "GoldenCheetah.app"'
+  alias excel='go "Microsoft Excel.app"'
+  alias xls='go "Microsoft Excel.app"'
+  alias ppt='go "Microsoft PowerPoint.app"'
+  alias word='go "Microsoft Word.app"'
+  alias team='go "Microsoft Teams.app"'
+  alias one='go "OneDrive.app"'
+  alias minecraft='go "Minecraft.app"'
+  alias numbers='go "Numbers.app"'
+  alias photos='go "Photos.app"'
+  alias preview='go "Preview.app"'
+  alias processing='go "Processing.app"'
+  alias processing3='go "Processing3.app"'
+  alias quicktime='go "QuickTime Player"'
+  alias scratch='go "Scratch 2.app"'
+  alias skim='go "Skim.app"'
+  alias skype='go "Skype.app"'
+  alias spotify='go "Spotify.app"'
+  alias sys='go "System Preferences.app"'
+  alias typist='go "Typist.app"'
+  alias whatsapp='go "WhatsApp.app"'
+  alias yed='go "yEd.app"'
+  alias zoom='go "zoom.us.app"'
+  alias imagecapture='go "Image Capture.app"'
+  alias keys="go Skim /Users/pg/.config/via/layout.pdf"
+
+# url
+  alias fbm='open https://www.messenger.com/'
+  alias youtube='open https://www.youtube.com/'
+  alias meal='open https://meals.oriel.ox.ac.uk/'
+  alias flow='open https://flow.polar.com/'
+  alias concept2log='open https://log.concept2.com/log'
+  alias garmin='open https://connect.garmin.com/modern/dashboard/56869745'
+  alias netflix='open https://www.netflix.com/'
+  alias github='open https://github.com/PhilGrunewald'
+  alias mail='open file:///Users/pg/Mail/preview.html'
+  alias zwift='open https://zwift.com/feed'
+  alias rouvy='open https://my.rouvy.com/'
+
+# ranger
+  alias rxx='ranger --choosedir=$HOME/.rangerdir; cd `cat $HOME/.rangerdir | sed "s/ /\\ /"`'
+  espace='s/\ /\\\ /g'
+  alias r='ranger --choosedir=$HOME/.rangerdir; eval cd `cat $HOME/.rangerdir | sed ${espace}`'
+  alias rf='finder; cd `cat $HOME/.rangerdir`;'
+  alias rr='cd $HOME/.config; r'
+  alias re='cd ~/Sites/edol.uk; r'
+  alias rE='cd ~/Documents/Oxford/2023/EDOL/EDOL_OneDrive/; r'
+  alias ra='cd ~/Documents/Software/db/analysis/; r'
+
+  # finder
+
+  alias finderShow="defaults write com.apple.Finder AppleShowAllFiles true && killall Finder"
+  alias finderHide="defaults write com.apple.Finder AppleShowAllFiles false && killall Finder"
+# email
+  alias unlock='rm ~/.offlineimap/cenv0291.lock'
+  #alias imap='~/.config/mutt/oauth2.py ~/.config/mutt/oauth_token && offlineimap -c ~/.config/offlineimap/rc -a cenv0291'
+  alias imap='python ~/.config/offlineimap/imap.py'
+
+# server
+  alias root="ssh -t root@energy-use.org 'zsh'"
+  alias phil="ssh -t phil@energy-use.org 'zsh'"
+  alias meter="ssh -t meter@energy-use.org 'zsh'"
+  alias ssheu="ssh -t meter@energy-use.org 'zsh; cd /var/www/energy-use.org/public_html/'"
+  alias sshjoy="ssh -t meter@energy-use.org 'cd /var/www/joymeter.uk/public_html/'"
+  alias sshgawg="ssh -t meter@energy-use.org 'zsh; cd /var/www/gawg.info/public_html/'"
+
+# vim: ft=sh foldmethod=indent

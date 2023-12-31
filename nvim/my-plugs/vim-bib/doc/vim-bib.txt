@@ -1,0 +1,53 @@
+*vim-bib.txt* edit and search bibtex bibliographies
+
+====================================================================
+CONTENTS                                          *vim-bib-contents*
+
+    1. Commands ............. |vim-bib-commands|
+    2. Revision history .... |vim-bib-revisions|
+
+====================================================================
+1. Commands                                          *vim-bib-commands*
+
+NEW
+|NewDOI| [`doi`]   Insert bib entry from DOI
+*NewArticle*     Inserts a template article
+*NewTechreport*  Inserts a template report
+
+Templates are kept in the `doc` folder.
+
+FILTERS                                                  *bib-filters*
+*BibFilter*  Find entry with matching `author` or `title`
+*BibKeyword* filter on `keywords` field
+*BibYear*    filter on `year`
+*BibAuthor*  filter on `author`
+*BibType*    filter on `type` such as 'article' or 'techreport'
+
+Takes a string argument and generates a dot-file copy with the results.
+Each new buffer allows additional filters to be applied sequentially.
+
+PLAIN TEXT
+*BibText*   generate a plain text file of the displayed entries
+
+
+*NewDOI* [`doi`] 
+             `doi` in format 10.1016/j.erss.2020.101719
+             if no argument is provided, the word under the cursor is used
+             requires python doi2bib
+
+====================================================================
+2. Revision history                                *vim-bib-revisions*
+
+| Date      | Ver.  | Author         | Updates               |
+| ----      | ----- | ------         | --------              |
+| 23 Apr 23 | v1.0  | Phil Grunewald | Plugin version        |
+
+
+
+
+
+
+
+
+===================================================================
+ vim:tw=78:ts=8:sw=2:et:ft=help:norl:

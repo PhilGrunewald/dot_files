@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+# extract Names and Email addresses for Mutt use
+
+# Received
+grep -oh '^From: .*[[:alnum:]+\.\_\-]*@[[:alnum:]+\.\_\-]*' -R ~/Mail/ox/INBOX/cur | sort | uniq -i > ~/Mail/addresses/received
+sed -i '' 's/.*<//' ~/Mail/addresses/received          # remove <>
+sed -i '' 's/.*"//' ~/Mail/addresses/received          # remove ""
+sed -i '' 's/.*mailto.*//' ~/Mail/addresses/received   # smells of marketing
+sed -i '' 's/^From: .*//' ~/Mail/addresses/received    # likely trash
+
+# Sent_to
+grep -oh '^To: .*[[:alnum:]+\.\_\-]*\.[[:alnum:]+\_\-]*@[[:alnum:]+\.\_\-]*' -R ~/Mail/ox/INBOX | sort | uniq -i > ~/Mail/addresses/sent_to
+sed -i '' 's/.*philipp.grunewald@ouce.ox.ac.uk.*//' ~/Mail/addresses/sent_to 
+sed -i '' 's/.*<//' ~/Mail/addresses/sent_to
+sed -i '' 's/.*"//' ~/Mail/addresses/sent_to
+sed -i '' 's/.*mailto://' ~/Mail/addresses/sent_to
+sed -i '' 's/To: .*//' ~/Mail/addresses/sent_to

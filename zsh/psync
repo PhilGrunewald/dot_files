@@ -1,0 +1,77 @@
+#! /bin/zsh
+start=`date +%s`
+origin="/Users/pg"
+disk="/Volumes/pg_2t/"
+if [ -d $disk ]
+then
+  target=$disk"pg/"
+  echo "\n\nPushing updates to "$target
+else
+  echo $disk" not found"
+  exit
+fi
+
+if [ "$1" = "pull" ]; then
+  delete=''
+else
+  delete='--delete'
+  vared -p 'Protect remote additions? [No] y: ' -c protect
+  if [ "$protect" = "y" ]
+  then
+    delete=''
+    echo 'In future, use `psync pull` to get new files from remote'
+  fi
+fi
+
+#verbose='--progress'
+verbose=''
+
+cd $origin
+
+echo "\n\n     Configs\n"
+rsync -auR $delete $verbose .config/ $target
+rsync -auR $delete $verbose .offlineimap/ $target
+rsync -auR $delete $verbose .ssh/ $target
+rsync -auR $delete $verbose .pandoc/ $target
+rsync -auR $delete $verbose .zshrc $target
+rsync -auR $delete $verbose .vimrc $target
+rsync -auR $delete $verbose .muttrc $target
+rsync -auR $delete $verbose .gitconfig $target
+
+echo "\n\n     Sites\n"
+rsync -auR $delete --progress Sites/ $target
+
+echo "\n\n     Documents\n"
+rsync -auR $delete --progress Documents $target
+
+echo "\n\n     Mail\n"
+rsync -auR $delete --progress Mail/ $target
+
+echo "\n\n     Pictures (SOME)\n"
+rsync -auR $delete --progress Pictures/Family $target
+rsync -auR $delete --progress Pictures/Holidays $target
+rsync -auR $delete --progress Pictures/Rowing $target
+rsync -auR $delete --progress Pictures/Passport $target
+
+echo "\n\n     Music/spotiphil\n"
+rsync -auR $delete --progress Music/spotiphil $target
+
+
+if [ $delete = '' ]
+then
+  # and reverse
+  echo "\n\nPulling updates FROM "$target
+  cd $target
+  rsync -auR --progress .config/ $origin
+  echo "\n\n     Sites\n"
+  rsync -auR --progress Sites/ $origin
+  echo "\n\n     Documents\n"
+  rsync -auR --progress Documents $origin
+  echo "\n\n     Mail\n"
+  rsync -auR --progress Mail/ $origin
+  cd $origin
+fi
+
+echo "Unmounting " $disk
+diskutil unmount $disk
+echo "Finished in "$((`date +%s`-start))"s"

@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+mu index --quiet &
+offlineimap -c ~/.config/offlineimap/rc -a cenv0291 -u quiet &
+pgAddresses &
+neomutt

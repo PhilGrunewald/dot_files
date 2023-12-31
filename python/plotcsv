@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+""" 
+plot first two columns of csv file
+if first column is called 'dt' convert to datetime
+"""
+
+import sys, os
+import matplotlib.pyplot as plt
+import pandas as pd
+
+path = os.getcwd()
+try:
+    fname = sys.argv[1]
+    if fname[-4:] != ".csv":
+        fname = (f"{fname}.csv")
+except:
+    fname = ("sql.csv")
+
+df = pd.read_csv(f"{path}/{fname}")
+
+x = df.columns[0]
+if x == 'dt':
+    df[x] = pd.to_datetime(df[x])
+y = df.columns[1]
+plt.plot(df[x],df[df.columns[1:]])
+plt.legend(df.columns[1:],frameon=False)
+plt.title(fname)
+plt.xlabel(x)
+plt.ylabel(y)
+plt.box(False)
+plt.show()

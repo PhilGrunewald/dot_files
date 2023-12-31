@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+""" get path from finder """
+import subprocess
+from subprocess import Popen, PIPE
+
+scpt = '''
+    tell application "Finder"
+     return (POSIX path of (selection as alias))
+    end tell
+    '''
+
+p = Popen(['osascript', '-'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+stdout, stderr = p.communicate(scpt.encode('utf-8'))
+dir_path = stdout.decode('utf-8')[:-1] # strip \n
+subprocess.call(f'ranger --selectfile="{dir_path}" --choosedir="$HOME/.rangerdir"', shell=True)

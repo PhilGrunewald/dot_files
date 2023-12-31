@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+FType="$(file -b --mime-type $1)"
+if [ "$FType" == "text/x-mail" ]
+then
+	echo "mail"
+	/usr/local/bin/mutt -F ~/Mail/cal/.calmuttrc -f $1
+elif [ "$FType" == "text/plain" ]
+then
+	/usr/local/bin/vim $1
+else
+	open $1
+fi

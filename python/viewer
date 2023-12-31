@@ -1,0 +1,336 @@
+#!/usr/bin/env python3
+""" loop through image files, creates thumbnails and index.html file """
+
+import sys
+from PIL import Image
+# from os import listdir
+from os import path, walk, system, listdir
+from yattag import Doc,indent
+import shutil
+import re
+months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+def getImages(root):
+    # cycle thruogh all images
+    # create thumbnail if doesn't exist
+    # list folders if they have an index.html file and append the first thumbnail
+    extensions = ('.jpg','.jpeg','.JPG','.png')
+    images = []
+    for filename in listdir(root):
+        if (filename[0] != '.') and filename.endswith(extensions):
+            imgFile = (f'{root}/{filename}')
+            thumbFile = (f'{root}/.{filename}')
+            if not path.isfile(thumbFile):
+                # create thumbnail
+                try:
+                    image = Image.open(imgFile)
+                    w,h = image.size
+                    c = min(image.size)
+                    image = image.crop(((w-c)//2,(h-c)//2,(w+c)//2,(h+c)//2))
+                    image.thumbnail((400, 400))
+                    image.save(thumbFile)
+                except:
+                    print(f"Failed on {filename}")
+            images.append(filename)
+        if path.isdir(f'{root}/{filename}'):
+            # filename is the subfolder name
+            if path.isfile(f'{root}/{filename}/index.html'):
+                subfiles = listdir(f'{root}/{filename}')
+                subfiles.sort()
+                # for subfile in listdir(f'{root}/{filename}'):
+                for subfile in subfiles:
+                    if (subfile[0] != '.') and subfile.endswith(extensions):
+                        images.append(f'{filename}/{subfile}')
+                        break
+        # clean up thumbnails with no image
+        if (filename[0] == '.') and filename.endswith(extensions):
+            if not path.isfile(f'{root}/{filename[1:]}'):
+                shutil.rmtree(f'{root}/{filename}',ignore_errors=True)
+
+    # optional sort by time rather than name
+    # t = [path.getmtime(f'{root}/{img}') for img in images]
+    # images = [image for _,image in sorted(zip(t,images),reverse=True)]
+    images.sort()
+    return images
+
+def overview(root,images):
+    doc, tag, text = Doc().tagtext()
+    with tag('html', ('lang','en')):
+        with tag('head'):
+            doc.stag('meta', ('charset', 'utf-8'))
+            doc.asis('<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">')
+            with tag('title'):
+                text(root.split('/')[-1])
+            with tag('style'):
+                text("""
+                body {
+                  background-color: #333;
+                   font-family: Verdana;
+                }
+                .label {
+                  position: absolute;
+                  font-size:   30px;
+                  max-width:   30%;
+                  color:       white;
+                  padding:     5px;
+                  border-radius: 5px;
+                  background-color: rgba(128, 128, 128, 0.6);
+                  }
+                .exitlabel {
+                  margin:      10px;
+                  width:        80%;
+                  font-size:   30px;
+                  color:       white;
+                  padding:     25px;
+                  border-radius: 5px;
+                }
+                .zoomDiv {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                }
+                .btn {
+                  display:       inline-block;
+                  width:         40px;
+                  height:        40px;
+                  border-radius: 40px;
+                  font-size:     30px;
+                  text-align:    center;
+                  color:         white;
+                  margin:        4px;
+                  background-color: rgba(128, 128, 128, 0.6);
+                }
+                .exitdate {
+                    text-align: right;
+                    right: 0px;
+                    font-size: 50%;
+                    color:    white;
+                    opacity:  0.6;
+                }
+                #container {
+                  display: grid;
+                  gap:     1px;
+                  grid-template-columns: auto auto auto auto;
+                }
+                .thumb {
+                  width: 100%;
+                }
+                .imgCount {
+                    font-size: 50%;
+                    color:    black;
+                    opacity:  0.6;
+                }
+                """)
+        with tag('body'):
+            if path.isfile(f'{root}/../index.html'):
+                with tag('div'):
+                    with tag('div', klass='exitlabel', onclick=f"window.location.href='../index.html#{root.split('/')[-1]}'"):
+                        label = root.split('/')[-1]
+                        date  = re.search("^\d\d_\d\d_", label)
+                        if date:
+                            label = label.split(date.group())[1]
+                            yy    = date.group().split('_')[0]
+                            mm    = int(date.group().split('_')[1])
+                            dateStr = f"{months[mm]} 20{yy}"
+                            with tag('div', klass='exitdate'):
+                                text(dateStr)
+                        with tag('div'):
+                            with tag('span', klass='btn'):
+                                text("<")
+                            with tag('span', klass='exitcaption'):
+                                text(label.replace('_',' '))
+                    with tag('div', klass='zoomDiv'):
+                        with tag('span', klass='btn', onclick="document.getElementById('container').setAttribute('style','grid-template-columns: auto auto auto auto auto auto')"):
+                            text("-")
+                        with tag('span', klass='btn', onclick="document.getElementById('container').setAttribute('style','grid-template-columns: auto auto')"):
+                            text("+")
+            with tag('div', id='container'):
+                imgCount = 0
+                for img in images:
+                    if '/' in img:
+                        base = img.split('/')[0]
+                        src  = base+'/.'+img.split('/')[1]
+                        href = base +'/index.html'
+                    else:
+                        href = '.'+img+'.html'
+                        src  = '.'+img
+                    label = img.split('/')[0]
+                    date  = re.search("^\d\d_\d\d_", label)
+                    if date:
+                        label = label.split(date.group())[1]
+                    with tag('div', id=src):
+                        with tag('a', href=href):
+                            if '/' in img:
+                                with tag('div', klass='label', id=img.split('/')[0]):
+                                    imgCount = 0
+                                    for r,d,f in walk(root+'/'+base):
+                                        subimg = [i for i in f if not i.startswith('.')]
+                                        subimg = [i for i in subimg if not i == 'index.html']
+                                        imgCount += len(subimg)
+                                    print(base, imgCount)
+                                    with tag('div', klass='imgCount'):
+                                        if date:
+                                            yy    = date.group().split('_')[0]
+                                            mm    = int(date.group().split('_')[1])
+                                            text(f"{months[mm]} 20{yy} 📷{imgCount}")
+                                        else:
+                                            text(f"📷{imgCount}")
+                                    text(f" {label.replace('_',' ')}")
+                            doc.stag('img', ('src',src), klass='thumb')
+            if path.isfile(f'{root}/../index.html'):
+                with tag('div', klass='thumb', onclick="window.location.href='../index.html'"):
+                    with tag('div', klass='exitlabel'):
+                        with tag('div'):
+                            with tag('span', klass='btn'):
+                                text("<")
+                            with tag('span', klass='exitcaption'):
+                                text("Back")
+    result = indent(doc.getvalue())
+    with open(f'{root}/index.html', "w") as f:
+        f.write(result)
+
+def viewer(root,images,this):
+    doc, tag, text = Doc().tagtext()
+    with tag('html', ('lang','en')):
+        with tag('head'):
+            doc.stag('meta', ('charset', 'utf-8'))
+            with tag('title'):
+                text(root.split('/')[-1])
+            with tag('style'):
+                text("""
+            body {
+              background-color: #333;
+               font-family: Verdana;
+            }
+            .image {
+                width: 100vh;
+                height: 100vh;
+            }
+            img {
+              margin: auto;  
+              position: absolute;
+              left:0;
+              right: 0;
+              top: 0;
+              bottom: 0;
+              max-height: 100%;
+              max-width: 100%;
+            }
+            .icon {
+              position: absolute;
+              text-align: center;
+              width:        60px;
+              height:       60px;
+              border-radius: 30px;
+              font-size:     40px;
+              color:        white;
+              margin:       10px;
+              background-color: rgba(128, 128, 128, 0.6);
+              }
+             .exit {
+              top:  5%;
+              left: 5%;
+             }
+             .close {
+              top:  5%;
+              right: 5%;
+             }
+             .prev {
+              top:  50%;
+              left: 5%;
+             }
+             .next {
+              top:  50%;
+              right: 5%;
+             }
+             .save {
+              font-size: 15px;
+              bottom: 0%;
+              right:   5%;
+             }
+             .info {
+              bottom:  0%;
+              left:    5%;
+             }
+             .infobox {
+              position:      absolute;
+              display:       none;
+              border-radius: 20px;
+              color:        white;
+              margin:       10px;
+              background-color: rgba(0, 0, 0, 0.5);
+              font-size:    200%;
+              padding:      40px;
+              bottom:       10%;
+              left:         20%;
+             }
+        """)
+        with tag('body'):
+            with tag('div', klass='image'):
+                doc.stag('img', ('src', this))
+                with tag('div', klass='exit icon', onclick=f"window.location.href='index.html#.{this}'"):
+                    text('^')
+                with tag('a', klass='save icon', href=this, download=this):
+                    text('💾')
+                for i,img in enumerate(images):
+                    if this == img:
+                        prevImg = images[i-1]
+                        if '/' in prevImg:
+                            prevImg = prevImg.replace('/','/.')
+                        else:
+                            prevImg = f'.{prevImg}'
+                        if len(images) > i+1:
+                            nextImg = images[i+1]
+                            if '/' in nextImg:
+                                nextImg = nextImg.replace('/','/.')
+                            else:
+                                nextImg = f'.{nextImg}'
+                        else:
+                            nextImg = './index'
+                with tag('div', klass='icon prev', onclick=f"window.location.href='{prevImg}.html'"):
+                    text('<')
+                with tag('div', klass='next icon', onclick=f"window.location.href='{nextImg}.html'"):
+                    text('>')
+                file = this.split('.')[0]
+                if path.isfile(f'{file}.md'):
+                    system(f'pandoc {file}.md -o {file}.html')
+                    with tag('div', klass='infobox', id=file, onclick=f"document.getElementById('{file}').style.display='none'"):
+                        with open(f'{file}.html','r') as f:
+                            doc.asis(f.read())
+                        with tag('div', klass='close icon'):
+                            text('x')
+                    with tag('div', klass='info icon', onclick=f"document.getElementById('{file}').style.display='inline'"):
+                        text('i')
+
+    result = indent(doc.getvalue())
+    with open(f'{root}/.{image}.html', "w") as f:
+        f.write(result)
+
+if len(sys.argv) > 1:
+    root = sys.argv[1]
+    rootend = root.split('/')[-1]
+    if '.' in rootend and len(rootend) > 4:
+        # has filename
+        root = root.split(rootend)[0][:-1]
+else:
+    root = '.'
+
+
+
+dirs = [x[0] for x in walk(root)]
+# avoid the Photos library folder
+dirs = [d for d in dirs if not 'photoslibrary' in d]
+
+counts = [d.count('/') for d in dirs]
+dirs = [x for _,x in sorted(zip(counts,dirs), reverse=True)]
+
+for d in dirs:
+    images = getImages(d)
+    folder = d.split('/')[-1]
+    # pics   = len(images)
+    # print(f'Folder: {folder} ({pics})')
+    overview(d,images)
+    for image in images:
+        if not '/' in image:
+            viewer(d,images,image)
+

@@ -1,0 +1,4 @@
+#!/bin/zsh
+FILE=`mktemp`
+cp $1 ${FILE}.html
+open file://${FILE}.html

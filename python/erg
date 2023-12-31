@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+"""
+erg
+--------
+
+convert Watt to split and split to watt
+
+"""
+
+import sys
+
+helpStr =  'erg {Watt [###],Split [m:ss]}'
+
+# import math
+def pad(s):
+    if int(s)<10:
+        return "0{}".format(s)
+    else:
+        return s
+
+def printTimes(sec,meters):
+    secSplit = sec * meters / 500
+    print("{:>6}m {}:{:.3}".format(meters,int(secSplit/60),pad(secSplit%60)))
+
+def main(argv):
+    split = argv[0].split(':')
+    if len(split) > 1:
+        t = float(split[0])*60+float(split[1])
+        watt = int(2.8/pow((t/500),3))
+        print(f'Watt: {watt}')
+    else:
+        watt = float(split[0])
+        t = float(pow(2.8/watt,1.0/3.0)*500)
+    printTimes(t,500)
+    printTimes(t,2000)
+    printTimes(t,5000)
+
+if __name__ == "__main__":
+    try:
+        main(sys.argv[1:])
+    except:
+        print('erg {Watt [###],Split [m:ss]}')
+
+

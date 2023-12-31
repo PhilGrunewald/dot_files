@@ -1,0 +1,57 @@
+#! /bin/zsh
+start=`date +%s`
+
+# find origin
+if [ -d "/home/phil/" ]
+then
+  origin="/home/phil"
+elif [ -d "/Users/pg/" ]
+then
+  origin="/Users/pg"
+else
+  echo "No home directory found"
+  exit
+fi
+
+# find target
+if [ -d "/media/phil/ExFat/" ]
+then
+  target="/media/phil/ExFat/pg"
+elif [ -d "/Volumes/ExFat/" ]
+then
+  target="/Volumes/ExFat/pg"
+else
+  echo "Target not found"
+  exit
+fi
+
+echo "\n\nPushing "$origin" to "$target
+
+cd $origin
+
+echo "\n\n     Documents\n"
+rsync -auR --progress Documents/Oxford/EDOL/ $target
+rsync -auR --progress Documents/txt/ $target
+
+echo "\n\n     Sites\n"
+rsync -auR --progress Sites/edol.uk $target
+
+echo "\n\n     Mail\n"
+rsync -auR --progress Mail/addresses $target
+rsync -auR --progress Mail/edol $target
+
+
+cd $target
+echo "\n\nPulling updates FROM "$target
+
+echo "\n\n     Documents\n"
+rsync -auR --progress Documents $origin
+
+echo "\n\n     Sites\n"
+rsync -auR --progress Sites/ $origin
+
+echo "\n\n     Mail\n"
+rsync -auR --progress Mail/ $origin
+
+cd $origin
+echo "Finished in "$((`date +%s`-start))"s"

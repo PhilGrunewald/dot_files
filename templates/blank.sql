@@ -1,0 +1,3 @@
+SELECT * FROM Meta
+LIMIT 5
+;

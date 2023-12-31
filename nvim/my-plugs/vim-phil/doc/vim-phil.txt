@@ -1,0 +1,155 @@
+*vim-phil.txt* a collection of little hacks and aids
+
+==============================================================================
+CONTENTS                                                     *vim-phil-contents*
+
+  Introduction ......... |vim-phil-intro|
+  No comment ........... |no-comment|
+  Correction fluid ..... |correction-fluid|
+  Save file ............ |save-file|
+  Delete file .......... |delete-file|
+  Open file ............ |open-file|
+  Rename ............... |rename|
+  Sum up ............... |sum-up|
+  Buffer cycling ....... |buf-cycle|
+  Ranger cd ............ |ranger-cd|
+  It's terminal ........ |its-terminal|
+
+==============================================================================
+Introduction                                                    *vim-phil-intro*
+
+Little helpers that are just a bit more than a mapping. Some of these are a
+function mapped to a key or command, others are a bit more involved.
+
+Each file serves just one purpose - trying to do one thing well.
+
+
+==============================================================================
+No comment                                                          *no-comment*
+
+  PROBLEM
+  Every file type seems to have a different way to comment things out.
+
+  USE
+
+  1) *<S-Space>* (un-)comments the current line and moves to the next line
+  2) *//* is replaced with the set comment character.
+
+  The second feature is to allow muscle memory use the same (easy access) key to
+  replace all those awkward `"`, `%` and `#` keystrokes.
+
+  IMPLEMENTATION
+  Use ftplugin to set `g:comment_char`. Add the following lines to any `ftplugin` files:
+
+    if exists("g:comment_char")
+      let |g:comment_char| = "%"
+      execute |commentOn|
+    endif
+
+  *g:comment_char*  the character(s) that mark a comment line
+
+  *commentOn*       sources the |no-comment| plugin to update with new |g:comment_char|
+
+  TODO
+  Visually select multiple rows to toggle (would that save any keystrokes?)
+
+==============================================================================
+Correction fluid                                              *correction-fluid*
+
+  MOTIVATION
+  Based on Douglas Adams' original idea. 99% of my typos are the first guess in the spelling suggestions. The default is:
+  - navigating back to the word
+  - bring up the spelling suggestions
+  - selecting the right one and 
+  - navigating back to where I was
+  - return to insert mode
+
+  USE
+  *,,*  While in insert mode, replaces the most recent typo with the first suggestion. Cursor returns for continuous typing.
+  Typing:
+    Misspeled word three back`,,` can be fixed on the go
+  becomes
+    Misspelled word three back can be fixed on the go
+
+  GOING BACK
+  The corrected word is kept in the search register `/"`. Navigate to it with `<ESC>n`
+
+==============================================================================
+Save file                                                            *save-file*
+
+  `IDEA` Save a files quickly based on date and first line
+
+  SOLUTION
+  :*Save*  saves unnamed file with date and first line, like
+         "23_12_31_The_first_line.md"
+
+  Don't like that name? See |Rename| :)
+
+==============================================================================
+Delete file                                                        *delete-file*
+
+:*Delete* move file to trash - that's it
+
+==============================================================================
+Open file                                                            *open-file*
+
+  *go* open files in normal mode
+  This is especially helpful for filenames of the current directory.
+  I also use cite-keys as file names. |go| opens the relevant `pdf` file.
+
+==============================================================================
+Rename                                                                  *rename*
+
+  :*Rename* [`new-name`]
+    Without `new-name`, pre-populates the current name for editing
+    With `new-name`, file gets renamed.
+    Extension is maintained.
+
+==============================================================================
+Sum up                                                                  *sum-up*
+  `Insert mode`
+  *===*  executes the current line mathematically and appends the result.
+  Simple arithmetic only (+-*/)
+  Typing:
+  `3+3*2===`
+  results in
+  `3+3*2=9`
+  Float output needs float input:
+  `3/2.0=1.5`  (but `3/2=1` !)
+
+  `Visual mode`
+  *S* Visual selection (incl. <C-v>) gets evaluated.
+  Sum and Avg are echoed.
+  Sum is yanked to clipboard for easy insertion
+
+==============================================================================
+Buffer cycling                                                       *buf-cycle*
+
+  <Right>  Next buffer
+  <Left>   Previous buffer
+  Buffers with terminal get closed.
+
+==============================================================================
+Ranger cd                                                            *ranger-cd*
+
+
+==============================================================================
+It's terminal                                                     *its-terminal*
+
+
+==============================================================================
+4. Revision history                              *vim-phil-revisions*
+
+22 Apr 23   v1.1   Phil Grunewald      Column sums / avg
+21 Apr 23   v1.0   Phil Grunewald      Auto comma conversion
+20 Apr 23   v0.1   Phil Grunewald      Initial version with helpfile
+
+
+
+
+
+
+
+
+==============================================================================
+ vim:tw=78:ts=8:sw=2:et:ft=help:norl:

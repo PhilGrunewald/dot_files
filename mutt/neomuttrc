@@ -1,0 +1,205 @@
+#   Update mail password:
+#   sudo vim /etc/postfix/relay_password
+#   sudo postmap /etc/postfix/relay_password
+#   sudo postfix reload
+#   sudo vim /etc/postfix/sasl_password
+#   sudo postmap /etc/postfix/sasl_password
+#   (not sure about sasl_passwd)
+#  
+#   ACCOUNTS
+#   ~/.config/mutt/accounts/cenv0291
+#   ~/.config/mutt/accounts/oucemter
+#   ~/.config/mutt/accounts/strato
+#   ~/.config/offlineimap/rc
+
+
+set timeout=10      # refresh every 10s (still needs <$> to lock in changes)
+
+set mailcap_path            = '~/.config/mutt/mailcap_plain'
+set folder                  = "~/Mail";
+
+color progress white green
+
+# ---------
+#  SIDEBAR
+# ---------
+
+bind index,pager \\ noop
+# Toggle sidebar and open the highlighted one
+macro index,pager \\n <sidebar-open><sidebar-toggle-visible>
+set sidebar_visible         = no
+set sidebar_width           = 20
+set sidebar_component_depth = 4
+set sidebar_new_mail_only   = no
+set sidebar_sort_method     = 'unsorted'  # count, flagged, new, path, unsorted
+set mail_check_stats        # Enable extended mailbox mode to calculate total, new, and flagged
+#set sidebar_visible
+set sidebar_format = "%B%?F? [%F]?%* %?S?%S?"
+set sidebar_folder_indent               # Indent folders whose names we've shortened
+
+mailboxes =ox $MAIL/ox/INBOX $MAIL/ox/Sent\ Items
+mailboxes =edol $MAIL/edol/INBOX $MAIL/edol/Sent
+mailboxes =Filed $MAIL/Filed/2023 $MAIL/Filed/2022 $MAIL/Filed/2021 $MAIL/Filed/2020 $MAIL/Filed/2019
+mailboxes =Filed $MAIL/Filed/Receipts
+
+set sidebar_short_path
+set sidebar_delim_chars="/"
+
+bind index,pager K sidebar-prev
+bind index,pager J sidebar-next
+bind index,pager H sidebar-open     # Open the highlighted mailbox
+bind index,pager \Ck sidebar-prev
+bind index,pager \Cj sidebar-next
+bind index,pager \Ch sidebar-open
+bind index,pager \Co sidebar-open
+
+
+# ======== #
+# Accounts #
+# ======== #
+
+macro index \\1 '<change-folder>~/Mail/ox/INBOX<enter>'
+folder-hook '~/Mail/ox/*' 'source ~/.config/mutt/accounts/cenv0291'
+
+macro index \\2 '<change-folder>~/Mail/edol/INBOX<enter>'
+folder-hook '~/Mail/edol/INBOX/*' 'source ~/.config/mutt/accounts/edol'
+
+macro index \\5 '<change-folder>imaps://outlook.office365.com:993<enter>'
+folder-hook 'imaps://outlook.office365.com:993' 'source ~/.config/mutt/accounts/cenv0291-remote'
+
+macro index \\6 '<change-folder>~/Mail/Strato/INBOX<enter>'
+folder-hook '~/Mail/Strato/*' 'source ~/.config/mutt/accounts/strato'
+
+macro index \\3 '<change-folder>~/Mail/Filed/Meter<enter>'
+folder-hook '~/Mail/Filed/Meter/*' 'source ~/.config/mutt/accounts/oucemter'
+folder-hook '~/Mail/Meter/*' 'source ~/.config/mutt/accounts/oucemter'
+folder-hook '~/Mail/gmail/*' 'source ~/.config/mutt/accounts/gmail'
+
+source ~/.config/mutt/accounts/cenv0291
+#source ~/.config/mutt/accounts/edol
+
+
+set alias_file=~/Mail/addresses/aliases.tab
+source ~/Mail/addresses/aliases.tab
+source ~/.config/mutt/hooks.mail
+source ~/.config/mutt/colour
+
+set editor="/usr/local/bin/nvim -f"   # Use neoVim
+
+# use ranger to save attachment
+macro index,pager   V <shell-escape>"open -a chrome file:///Users/pg/Mail/preview.html"<enter>
+macro attach        S <shell-escape>"ranger ~/Mail/Attachments/"<enter>
+macro attach        s <save-entry><bol>~/Mail/Attachments/<eol><enter>
+
+unset help                  # Do not show common bindings at the top
+
+set autoedit        = yes
+set edit_headers    = yes        # Allow me to edit headers.
+set abort_nosubject = no      # Allow subject to be blank
+set fast_reply      = yes
+set wait_key        = no
+
+set certificate_file = ~/.config/mutt/certificates
+set include
+set move             = no
+set delete           = yes     # when syncing, delete messages without asking
+set confirmappend    = no      # don't ask before saving message to existing folder
+set recall           = no      # don't ask to continue postponed message
+set quit             = ask-yes
+set mime_forward     = yes     # forward all (incl text) as attachment. Better: v, tag all (body+attachments), f
+set text_flowed      = no      # CHANGED - did silly line merging while tying - was to don't linebreak messages
+set indent_string    = ''      # sadly mutt still uses "> "
+set auto_tag                   # no need to start with ';' when anything is tagged next command will apply to tagged messages
+set narrow_tree                # tighter threading layout
+unset mark_old                 # keep all unread messages as 'new' (rather than 'old')
+
+# set attach_format = "%u%D%I %t%4n %T%.80d%> [%.7m/%.10M, %.6e%?C?, %C?, %s] "
+set attach_format = "[%s]%D %.80d%> %.10M"
+set abort_noattach = ask-no
+#set abort_noattach_regex = "attach"
+
+# neomutt doesn't cope with gg if a g binding exists
+bind index,pager,attach    g       noop
+#bind index,pager,attach    gg      first-entry
+#bind index,pager,attach    G       last-entry
+bind index,pager           R       group-reply
+bind index                 <space> collapse-all
+bind attach                <space> collapse-parts
+bind pager                 [       half-up
+bind pager                 ]       half-down
+macro pager         l       "il"
+bind index,pager M compose-to-sender
+macro index L "Ot<limit-current-thread>Od"
+
+macro index,pager   \\/ "<change-folder-readonly>~/Mail/results<return><shell-escape>pgFind " \
+                  "mu find"
+
+macro pager         <UP>    "<enter-command>set pager_index_lines   = 10<enter>"
+macro pager         <DOWN>  "<enter-command>set pager_index_lines   = 30<enter>"
+macro pager         H       "<enter-command>unignore To Cc Date<enter>"
+
+macro index,pager   c       "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro index,pager   \\N     "l~N !~f philipp.grunewald@eng.ox.ac.uk<return>" 
+macro index,pager   \\F     "l~F<return>" 
+macro index,pager   \\A     "l~z 100000-<return>"  "Attachements"
+macro index,pager   \\.     "l!~f philipp.grunewald@eng.ox.ac.uk<return>" 
+
+# Move content here:
+macro index,pager   \\i     "s~/Mail/ox/INBOX<return>" 
+macro index,pager   \\a     "s~/Mail/Filed/2023<return>" 
+macro index,pager   \\m     "s~/Mail/Filed/Meter<return>" 
+macro index,pager   \\r     "s~/Mail/Filed/Receipts<return>" 
+macro index,pager   \\p     "s~/Mail/Filed/ReNEW/Participants<return>" 
+macro index,pager   \\P     "<change-folder>~/Mail/Filed/ReNEW/Participants<return>" 
+#macro index         A       "T~d>4m !~F !~N<return>;s~/Mail/Filed/2023<return>"  # Archive old, read and unflagged
+#macro index         A       "T~d 1/1/22-31/12/22 !~F<return>;s~/Mail/Filed/2021<return>"  # Archive old and unflagged
+
+# INDEX configuration
+# smart neomutt optional date format
+set index_format='%<[y?%<[m?%<[d?%[%H:%M  ]&%[%a %d ]>&%[%d %b ]>&%[%m/%y ]> %-15.15L %?M?(%1M)? %?y?[%.20Y] ?%s'
+# macro index,pager   <right> '<enter-command>set index_format="%4C %?X?%X& ? %Z %<[y?%<[m?%<[d?%[%H:%M ]&%[%a %d]>&%[%b %d]>&%[%m/%y ]> %-15.15L %?M?(%1M)? %?y?[%.20Y] ?%s"<enter>'
+#set index_format="%[%a]  %-20.20L %?M?(%1M)? %?y?[%.20Y] ?%s"
+macro index,pager <right> '<enter-command>set index_format="%4C %Z %?X?%X📎&  ? %<[y?%<[m?%<[d?%[%H:%M  ]&%[%a %d ]>&%[%d %b ]>&%[%m/%y ]> %-15.15L %?M?(%1M)? %?y?[%.20Y] ?%s"<enter>'
+macro index,pager   <left>  '<enter-command>set index_format="%<[y?%<[m?%<[d?%[%H:%M  ]&%[%a %d ]>&%[%d %b ]>&%[%m/%y ]> %-15.15L %?M?(%1M)? %?y?[%.20Y] ?%s"<enter>'
+
+set status_format = "New:%n/%M  flag:%F  tag:%t     %?V? Filter: %V? %> %s"
+
+set date_format    = "!%a, %b %d, %Y at %I:%M:%S%p %Z"
+set forward_format = "Fwd: %s"
+
+#set index_format="%4C %Z (%4l) %s"
+# C = message number
+# Z = flags
+# d = day of month
+# b = month ('Jan')
+#
+set sort                =reverse-date
+set sort_aux            =last-date-received
+
+set pager_index_lines   = 20    # number of index lines to show
+set pager_context       = 3     # number of context lines to show
+set pager_stop          = yes   # don't go to next message automatically
+set menu_scroll         = yes   # scroll in menus
+set tilde               = yes   # show tildes like in vim
+set markers             = no    # no ugly plus signs
+
+# PAGER configuration
+ignore *
+unignore  From To Cc Subject
+hdr_order From To Cc Subject
+
+alternative_order   text/html text/plain text/calendar text/enriched multipa/alternativ *
+auto_view           text/html
+auto_view           text/calendar
+
+macro index g         "<enter-command>set mailcap_path='~/.config/mutt/mailcap_plain'<enter><display-message>"
+macro index G         "<enter-command>set mailcap_path='~/.config/mutt/mailcap'<enter><display-message>"
+macro pager g         "<enter-command>set mailcap_path='~/.config/mutt/mailcap_plain'<enter><enter>q<display-message>"
+macro pager G         "<enter-command>set mailcap_path='~/.config/mutt/mailcap'<enter><enter>q<display-message>"
+
+# MARKDOWN
+macro compose \\p "F pandoc -s -f markdown -t html \ny^T^Utext/html; charset=utf-8\n"
+
+set folder="~/Mail";
+
+# vim: syntax=neomuttrc

@@ -1,0 +1,31 @@
+# 8 Jan 2016
+# the first (and they need to be in this order) is to add vcal file to gcalcli by pressing 'm' in attachment view
+text/calendar; pgCal %s
+text/calendar; ical.py %s; copiousoutput
+
+# to open with Safari > 'v' > 'm' (attach menu 'm')
+text/html;		~/.config/mutt/open_html %s
+text/html; pandoc --quiet -f html -t markdown %s; copiousoutput;
+
+# Images
+image/*; (clear && imgcat -r %s && read -n 1); needsterminal
+
+# PDF
+Application/PDF; ~/.config/mutt/open_attachment %s
+image/pdf; ~/.config/mutt/open_attachment %s
+
+# MS office
+Application/msword; ~/.config/mutt/open_attachment %s
+Application/doc; ~/.config/mutt/open_attachment %s
+Application/docx; ~/.config/mutt/open_attachment %s
+
+Application/vnd.openxmlformats-officedocument.wordprocessingml.document; ~/.config/mutt/open_attachment %s
+Application/vnd.ms-powerpoint; ~/.config/mutt/open_attachment %s
+
+# Excel
+Application/vnd.ms-excel; ~/.config/mutt/open_attachment %s
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; ~/.config/mutt/open_attachment %s
+
+Application/vnd.openxmlformats-officedocument.presentationml.presentation; ~/.config/mutt/open_attachment %s
+
+application/vnd.openxmlformats-officedocument.presentationml.presentation; ~/.config/mutt/open_attachment %s
