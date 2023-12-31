@@ -1,0 +1,14 @@
+name: umlaut
+parent: default
+matches:
+  - trigger: "a''"
+    replace: "ä"
+    propagate_case: true
+  - trigger: "o''"
+    replace: "ö"
+    propagate_case: true
+  - trigger: "u''"
+    replace: "ü"
+    propagate_case: true
+  - trigger: "sss"
+    replace: "ß"

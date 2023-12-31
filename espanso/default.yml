@@ -1,0 +1,37 @@
+# espanso config
+# https://espanso.org/docs/matches/
+show_icon: false
+toggle_key: LEFT_SHIFT
+
+matches:
+# Dates
+  - trigger: "date_"
+    replace: "{{mydate}}"
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%y_%m_%d"
+  - trigger: "ddate"
+    replace: "{{mydate}}"
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%d %b %y"
+  - trigger: "ttime"
+    replace: "{{mytime}}"
+    vars:
+      - name: mytime
+        type: date
+        params:
+          format: "%H:%M "
+
+  # Shell commands
+  - trigger: ":shell"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "Hello Phil"
