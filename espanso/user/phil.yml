@@ -88,13 +88,8 @@ matches:
     replace: "<ul>$|$</ul>"
   - trigger: "<div"
     replace: "<div class=\"\">$|$</div>"
-<<<<<<< HEAD
-  - trigger: "<a "
-    replace: "<a href='$|$'><++></a>"
-=======
   # - trigger: "<a "
     # replace: "<a href='$|$'><++></a>"
->>>>>>> mac
   - trigger: "<button"
     replace: "<button>$|$</button>"
   - trigger: "<html"
@@ -169,12 +164,7 @@ matches:
     replace: "philipp.grunewald1@gmail.com"
   - trigger: "pplot"
     replace: "from matplotlib import pyplot as plt"
-<<<<<<< HEAD
-
-=======
   - trigger: ":s"
     replace: "'s"
   - trigger: ":t"
     replace: "'t"
->>>>>>> mac
-
