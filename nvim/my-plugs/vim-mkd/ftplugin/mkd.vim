@@ -31,6 +31,7 @@ nmap ]] :ALENext<CR>
               normal ciwo
           endif
       elseif (cStr == "o")
+        " move item to 'done' list
           normal ciw✓
           normal ddmo
           /^# DONE\n/
@@ -91,6 +92,21 @@ setlocal formatoptions-=1
 setlocal comments=:-
 
 function! Process(format)
+  if getline('.') =~ '^AR '
+    call TakeAction()
+    return
+  endif
+  if getline('.') =~ '^>'
+    call ShellLine()
+    return
+  endif
+  if &filetype == 'python'
+    echo "switching to python"
+    e
+    call ProcessPython()
+    return
+  endif
+
   PWD
   "silent! %s/    / \\hfill /
   write

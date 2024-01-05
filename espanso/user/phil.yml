@@ -70,16 +70,6 @@ matches:
   - trigger: ";ip"
     replace: "109.74.196.205"
 
-# passports
-  - trigger: "ppali"
-    replace: "139843078 230333"
-  - trigger: "ppphil"
-    replace: "C4YM9PH4G 2/8/30"
-  - trigger: "ppanna"
-    replace: "C4YMKL6LP 22/5/23"
-  - trigger: "ppmax"
-    replace: "136452593 310328"
-
 # code
   - trigger: "!["
     replace: "![$|$](<++>)"
@@ -98,8 +88,13 @@ matches:
     replace: "<ul>$|$</ul>"
   - trigger: "<div"
     replace: "<div class=\"\">$|$</div>"
+<<<<<<< HEAD
   - trigger: "<a "
     replace: "<a href='$|$'><++></a>"
+=======
+  # - trigger: "<a "
+    # replace: "<a href='$|$'><++></a>"
+>>>>>>> mac
   - trigger: "<button"
     replace: "<button>$|$</button>"
   - trigger: "<html"
@@ -174,5 +169,12 @@ matches:
     replace: "philipp.grunewald1@gmail.com"
   - trigger: "pplot"
     replace: "from matplotlib import pyplot as plt"
+<<<<<<< HEAD
 
+=======
+  - trigger: ":s"
+    replace: "'s"
+  - trigger: ":t"
+    replace: "'t"
+>>>>>>> mac
 

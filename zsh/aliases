@@ -54,7 +54,7 @@ my_trash () {
   alias python='python3'
 
 # spotify
-  alias music='spotify; cd ~/Music/spotiphil/; vim albums.spot'
+  alias music='spotify; cd ~/Music/spotiphil/; source ~/.config/private/spotipy_access; vim albums.spot'
   alias sp.next="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.next()'"
   alias sp.toggle="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.toggle()'"
   alias sp+="cd ~/Music/spotiphil/; python -c 'import spotiphil as sp; sp.volume(\"+\")'"

@@ -5,7 +5,7 @@ import json
 
 # edit ini: `gpg ini.json.gpg` 
 # encrypt:  `gpg -e -r phil ini.json`
-ini = json.loads(os.popen('gpg -d ini.json.gpg').read())
+ini = json.loads(os.popen('gpg -d ~/.config/python/edol/ini.json.gpg').read())
 
 # DB modules
 import pymysql

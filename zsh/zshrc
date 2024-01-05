@@ -36,11 +36,6 @@ export GNUPGHOME=~/.config/gnupg
 GPG_TTY=`tty`
 export GPG_TTY
 
-# Spotipy
-export SPOTIPY_CLIENT_ID=`gpg -d ~/.config/zsh/private/SPOTIPY_CLIENT_ID.gpg`
-export SPOTIPY_CLIENT_SECRET=`gpg -d ~/.config/zsh/private/SPOTIPY_CLIENT_SECRET.gpg`
-export SPOTIPY_REDIRECT_URI='http://localhost/~pg/spotipy.php'
-
 # suppress "You have new mail"
 MAILCHECK=0
 
